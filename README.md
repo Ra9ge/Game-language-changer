@@ -49,6 +49,11 @@ The launcher itself is not the primary compatibility factor. The game must use a
   <img src="https://github.com/user-attachments/assets/0fa52500-33e6-4062-8675-663e2a766ea3" alt="Translation Example" width="800">
 </p>
 
+<p align="centerr">
+  <img src="https://github.com/user-attachments/assets/09f17dba-cfec-4b98-b169-670eef76b575" alt="Translation Example" width="800">
+</p>
+
+
 ## How to Use
 
 1. Download the latest release or build the project from source.
