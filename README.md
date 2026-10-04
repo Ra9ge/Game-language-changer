@@ -31,7 +31,6 @@ Whether the game is installed through **Steam or another PC launcher**, you can 
 <img width="1376" height="768" alt="Banner" src="https://github.com/user-attachments/assets/c1bf1f57-2a85-4a60-9531-616a1607023c" />
 
 
-
 The tool is designed for PC games regardless of how they are distributed, including:
 
 * Steam
@@ -42,6 +41,13 @@ The tool is designed for PC games regardless of how they are distributed, includ
 The launcher itself is not the primary compatibility factor. The game must use a supported Unity text or localization system.
 
 **Not supported:** Android, iOS, and game consoles.
+
+
+<h2 align="centerr">App Design</h2>
+
+<p align="centerr">
+  <img src="https://github.com/user-attachments/assets/0fa52500-33e6-4062-8675-663e2a766ea3" alt="Translation Example" width="800">
+</p>
 
 ## How to Use
 
