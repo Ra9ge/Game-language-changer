@@ -1,7 +1,7 @@
 {
   "name": "unity-game-language-changer",
   "productName": "Unity Game Language Changer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Translate any Unity game into your language with BepInEx and XUnity.AutoTranslator",
   "author": "Unity Game Language Changer",
   "license": "MIT",
