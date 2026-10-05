@@ -25,13 +25,46 @@ function isDataDir(dir) {
 }
 
 function findGameIn(dir) {
-  for (const entry of list(dir)) {
-    if (!entry.isDirectory() || !entry.name.endsWith('_Data')) continue
-    const base = entry.name.slice(0, -5)
-    const exe = path.join(dir, `${base}.exe`)
+  const entries = list(dir)
+  const dataDirs = entries.filter(e => e.isDirectory() && e.name.endsWith('_Data'))
+  const exeFiles = entries.filter(e => e.isFile() && e.name.toLowerCase().endsWith('.exe'))
+
+  // exact match first: GameName.exe + GameName_Data/
+  for (const entry of dataDirs) {
     const dataDir = path.join(dir, entry.name)
-    if (exists(exe) && isDataDir(dataDir)) return { root: dir, exe, dataDir, exeName: base }
+    if (!isDataDir(dataDir)) continue
+    const base = entry.name.slice(0, -5)
+    const exactExe = path.join(dir, `${base}.exe`)
+    if (exists(exactExe)) return { root: dir, exe: exactExe, dataDir, exeName: base }
   }
+
+  // fuzzy match: any .exe paired with a _Data folder that's a Unity data dir
+  for (const exeEntry of exeFiles) {
+    const exeName = exeEntry.name.slice(0, -4)
+    const exeLower = exeName.toLowerCase().replace(/[^a-z0-9]/g, '')
+    for (const dataEntry of dataDirs) {
+      const dataDir = path.join(dir, dataEntry.name)
+      if (!isDataDir(dataDir)) continue
+      const dataBase = dataEntry.name.slice(0, -5)
+      const dataLower = dataBase.toLowerCase().replace(/[^a-z0-9]/g, '')
+      if (exeLower === dataLower || dataLower.startsWith(exeLower) || exeLower.startsWith(dataLower)) {
+        return { root: dir, exe: path.join(dir, exeEntry.name), dataDir, exeName: dataBase }
+      }
+    }
+  }
+
+  // last resort: any .exe next to any valid Unity _Data dir
+  if (dataDirs.length > 0 && exeFiles.length > 0) {
+    for (const dataEntry of dataDirs) {
+      const dataDir = path.join(dir, dataEntry.name)
+      if (!isDataDir(dataDir)) continue
+      // prefer an exe that isn't a known launcher/helper
+      const HELPERS = /^(unitycrashhandler|ue4prereqsetup|vcredist|dotnet|setup|install|launcher|eac|epicwebhelper)/i
+      const bestExe = exeFiles.find(e => !HELPERS.test(e.name)) || exeFiles[0]
+      return { root: dir, exe: path.join(dir, bestExe.name), dataDir, exeName: bestExe.name.slice(0, -4) }
+    }
+  }
+
   return null
 }
 
