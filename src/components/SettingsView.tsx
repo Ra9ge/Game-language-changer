@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react'
-import { IconBrandGithub, IconCheck, IconDeviceDesktop, IconSparkles, IconTrash } from '@tabler/icons-react'
+import { IconBrandGithub, IconBrandTelegram, IconCheck, IconDeviceDesktop, IconSparkles, IconTrash } from '@tabler/icons-react'
 import { Accent, api, Keys, Settings } from '../api'
 import { Key, useI18n } from '../i18n'
 import { LANGUAGES, localName } from '../languages'
@@ -7,8 +7,10 @@ import { TRANSLATORS, findTranslator, KeyField } from '../translators'
 import { Flag } from './Flag'
 import { Select } from './Select'
 import { Switch } from './Switch'
+import logo from '../assets/logo.png'
 
 export const REPO_URL = 'https://github.com/Ra9ge/Game-language-changer'
+export const TELEGRAM_URL = 'https://t.me/Ra9ge'
 
 const FONTS = ['', 'Arial', 'Segoe UI', 'Tahoma', 'Verdana', 'Calibri', 'Georgia', 'Times New Roman', 'Trebuchet MS']
 const ACCENTS: Accent[] = ['red', 'violet', 'blue', 'green', 'orange', 'pink']
@@ -231,14 +233,33 @@ export function SettingsView({ settings, version, acrylic, onChange, onToast }: 
               {t('settings.cache.clear')}
             </button>
           </Row>
-          <Row title={t('settings.about')} text={t('settings.version', { v: version })}>
-            <button type="button" className="button small" onClick={() => api.app.openUrl(REPO_URL)}>
-              <IconBrandGithub size={15} />
-              GitHub
-            </button>
-          </Row>
         </section>
       </div>
+
+      <footer className="panel about">
+        <img src={logo} alt="" draggable={false} />
+        <div className="about-text">
+          <div className="about-title">
+            Unity Game Language Changer <span>v{version}</span>
+          </div>
+          <div className="about-credit">
+            Creator <b>Ra9ge</b> <span className="badge accent-badge">Developer</span>
+          </div>
+          <button type="button" className="about-link" onClick={() => api.app.openUrl(REPO_URL)}>
+            {REPO_URL.replace('https://', '')}
+          </button>
+        </div>
+        <div className="about-actions">
+          <button type="button" className="button small" onClick={() => api.app.openUrl(REPO_URL)}>
+            <IconBrandGithub size={16} />
+            GitHub
+          </button>
+          <button type="button" className="button small" onClick={() => api.app.openUrl(TELEGRAM_URL)}>
+            <IconBrandTelegram size={16} />
+            Telegram
+          </button>
+        </div>
+      </footer>
     </div>
   )
 }
