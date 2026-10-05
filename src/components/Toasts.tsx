@@ -1,4 +1,4 @@
-import { IconAlertTriangle, IconCircleCheck, IconX } from '@tabler/icons-react'
+import { IconX } from '@tabler/icons-react'
 
 export interface Toast {
   id: number
@@ -13,7 +13,6 @@ export function Toasts({ items, onDismiss }: { items: Toast[]; onDismiss: (id: n
     <div className="toasts">
       {items.map(item => (
         <div key={item.id} className={`toast ${item.kind}${item.leaving ? ' closing' : ''}`}>
-          <span className="toast-icon">{item.kind === 'ok' ? <IconCircleCheck size={17} /> : <IconAlertTriangle size={17} />}</span>
           <div className="toast-body">
             <strong>{item.title}</strong>
             {item.text && <span>{item.text}</span>}
