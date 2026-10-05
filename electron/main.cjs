@@ -83,6 +83,7 @@ function trackProcess(game, alreadyRunning) {
       clearInterval(timer)
       processes.delete(key)
       send('game:process', { root: game.root, state: 'stopped' })
+      if (seen) refreshAfterSession(game)
     }
   }, 2000)
   processes.set(key, timer)
@@ -104,6 +105,18 @@ function guard(task) {
     } finally {
       busy = null
     }
+  }
+}
+
+async function refreshAfterSession(game) {
+  if (busy || !store.getSettings().pretranslate) return
+  busy = new AbortController()
+  try {
+    const result = await installer.updatePretranslation(game.root, { ...context(busy.signal), report: () => {} })
+    if (result?.translated) send('game:refreshed', { root: game.root, added: result.translated })
+  } catch {
+  } finally {
+    busy = null
   }
 }
 

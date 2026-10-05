@@ -155,6 +155,7 @@ interface Bridge {
     shortcut(input: string): Promise<{ ok: boolean; path?: string; error?: string }>
     onStage(cb: (e: { root: string; stage: LaunchStage }) => void): () => void
     onProcess(cb: (e: { root: string; state: ProcessState | 'stopped' }) => void): () => void
+    onRefreshed(cb: (e: { root: string; added: number }) => void): () => void
     apply(input: string, options: InstallOptions): Promise<GameResult>
     uninstall(input: string, options: { keepTranslations: boolean }): Promise<GameResult>
     toggle(input: string, enabled: boolean): Promise<GameResult>

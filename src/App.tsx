@@ -198,6 +198,15 @@ export function App() {
     [refresh]
   )
 
+  useEffect(
+    () =>
+      api.game.onRefreshed(({ added }) => {
+        toast('ok', t('toast.refreshed'), t('toast.refreshed.text', { n: added.toLocaleString(lang) }))
+        refresh()
+      }),
+    [refresh, toast, t, lang]
+  )
+
   useEffect(() => {
     if (!game || game.install.status === 'installed' || game.install.status === 'disabled') return
     let alive = true

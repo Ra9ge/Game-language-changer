@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld('ugl', {
     shortcut: input => ipcRenderer.invoke('game:shortcut', input),
     onStage: callback => subscribe('game:stage', callback),
     onProcess: callback => subscribe('game:process', callback),
+    onRefreshed: callback => subscribe('game:refreshed', callback),
     apply: (input, options) => ipcRenderer.invoke('game:apply', input, options),
     uninstall: (input, options) => ipcRenderer.invoke('game:uninstall', input, options),
     toggle: (input, enabled) => ipcRenderer.invoke('game:toggle', input, enabled),

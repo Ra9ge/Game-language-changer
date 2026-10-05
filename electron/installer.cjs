@@ -326,6 +326,13 @@ async function runPretranslate(game, options, ctx) {
   }
 }
 
+async function updatePretranslation(input, ctx) {
+  const game = analyze(input, { withLanguage: false })
+  const { status, language, fromLanguage } = game.install
+  if (status !== 'installed' || !language || !fromLanguage) return null
+  return runPretranslate(game, { sourceLang: fromLanguage, targetLang: language }, ctx)
+}
+
 async function pretranslateGame(input, options, ctx) {
   const game = analyze(input, { withLanguage: false })
   if (game.install.status !== 'installed' && game.install.status !== 'disabled') throw new InstallError('not_installed')
@@ -394,4 +401,4 @@ async function setEnabled(input, enabled) {
   return analyze(root)
 }
 
-module.exports = { install, applySettings, pretranslateGame, uninstall, setEnabled, isRunning, canWrite, InstallError, needsFont }
+module.exports = { install, applySettings, pretranslateGame, updatePretranslation, uninstall, setEnabled, isRunning, canWrite, InstallError, needsFont }

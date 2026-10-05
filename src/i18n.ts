@@ -184,6 +184,8 @@ const ru = {
   'toast.editorSaved': 'Исправления сохранены',
   'toast.editorSaved.text': 'Нажми Alt+R в игре, чтобы увидеть их сразу.',
   'toast.scanned': 'Найдено игр на Unity: {n}',
+  'toast.refreshed': 'Перевод дополнен',
+  'toast.refreshed.text': 'Переведено новых строк из игры: {n}',
 
   'confirm.remove': 'Удалить перевод?',
   'confirm.remove.text': 'Из папки игры удалятся BepInEx и XUnity.AutoTranslator. Готовые переводы сохранятся, если это включено в настройках.',
@@ -459,6 +461,8 @@ const en: Record<Key, string> = {
   'toast.editorSaved': 'Fixes saved',
   'toast.editorSaved.text': 'Press Alt+R in the game to see them right away.',
   'toast.scanned': 'Unity games found: {n}',
+  'toast.refreshed': 'Translation updated',
+  'toast.refreshed.text': 'New lines from the game translated: {n}',
 
   'confirm.remove': 'Remove translation?',
   'confirm.remove.text': 'BepInEx and XUnity.AutoTranslator will be deleted from the game folder. Finished translations are kept if that’s on in settings.',
@@ -732,6 +736,8 @@ const uk: Record<Key, string> = {
   'toast.editorSaved': 'Виправлення збережено',
   'toast.editorSaved.text': 'Натисни Alt+R у грі, щоб побачити їх одразу.',
   'toast.scanned': 'Знайдено ігор на Unity: {n}',
+  'toast.refreshed': 'Переклад доповнено',
+  'toast.refreshed.text': 'Перекладено нових рядків із гри: {n}',
 
   'confirm.remove': 'Видалити переклад?',
   'confirm.remove.text': 'З папки гри буде видалено BepInEx та XUnity.AutoTranslator. Готові переклади збережуться, якщо це увімкнено в налаштуваннях.',
