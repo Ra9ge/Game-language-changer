@@ -3,7 +3,8 @@ const path = require('path')
 const os = require('os')
 
 const MAX_FILE = 512 * 1024 ** 2
-const MAX_TOTAL = 3 * 1024 ** 3
+const MAX_TOTAL = 1536 * 1024 ** 2
+const MAX_TIME = 75 * 1000
 
 function lz4(src, size) {
   const out = Buffer.allocUnsafe(size)
@@ -106,6 +107,26 @@ function serializedStrings(buf, push) {
     if (text.includes('�')) continue
     push(text)
     i += (len + 3) & ~3
+  }
+}
+
+function messagePackStrings(buf, push) {
+  const end = buf.length - 3
+  for (let i = 0; i < end; i++) {
+    const tag = buf[i]
+    if (tag !== 0xd9 && tag !== 0xda) continue
+    const start = tag === 0xd9 ? i + 2 : i + 3
+    const len = tag === 0xd9 ? buf[i + 1] : buf.readUInt16BE(i + 1)
+    if (len < 8 || len > 2000 || start + len > buf.length) continue
+    const first = buf[start]
+    const last = buf[start + len - 1]
+    if (first < 0x20 || (first > 0x7e && first < 0xc2) || last < 0x20) continue
+    const slice = buf.subarray(start, start + len)
+    if (slice.includes(0)) continue
+    const text = slice.toString('utf8')
+    if (text.includes('�')) continue
+    push(text)
+    i = start + len - 1
   }
 }
 
@@ -314,6 +335,7 @@ async function collect(game, appInfo, sourceLang, { onProgress, signal, limit = 
   }
 
   const files = sources(game, appInfo)
+  const started = Date.now()
   let scanned = 0
   for (let i = 0; i < files.length; i++) {
     if (signal?.aborted) break
@@ -324,7 +346,8 @@ async function collect(game, appInfo, sourceLang, { onProgress, signal, limit = 
     } catch {
       continue
     }
-    if (size < 16 || size > MAX_FILE || scanned > MAX_TOTAL) continue
+    if (size < 16 || size > MAX_FILE || scanned + size > MAX_TOTAL) continue
+    if (Date.now() - started > MAX_TIME) break
     const name = path.basename(file).toLowerCase()
     try {
       if (/\.(json|txt|csv|tsv|xml|yaml|yml|lang|loc|po)$/.test(name)) {
@@ -342,7 +365,10 @@ async function collect(game, appInfo, sourceLang, { onProgress, signal, limit = 
         if (!isBundle && !isSerialized) continue
         const buf = fs.readFileSync(file)
         const body = isBundle ? readUnityFS(buf) : buf
-        if (body) serializedStrings(body, push)
+        if (body) {
+          serializedStrings(body, push)
+          if (body.length < 64 * 1024 ** 2) messagePackStrings(body, push)
+        }
       }
       scanned += size
     } catch {}
