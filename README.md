@@ -1,5 +1,7 @@
 # Unity Game Language Changer
 
+[Русская версия](README.ru.md)
+
 <p align="center">
   <img width="675" height="556" alt="Logo(1)-photoretrica" src="https://github.com/user-attachments/assets/54f0a797-76da-4954-8171-99c52144acf6" />
 </p>
@@ -86,6 +88,40 @@ The project includes the full source code and a ready-to-use executable.
 
 You can inspect the implementation, build the application yourself, report bugs, or contribute improvements.
 
+
+## Download
+
+Grab `UnityGameLanguageChanger-x.x.x.exe` from [Releases](../../releases/latest). It's portable — no install needed. Windows SmartScreen may warn about an unsigned app: click **More info → Run anyway**.
+
+## Build from Source
+
+```bash
+npm install
+npm start
+```
+
+Portable exe:
+
+```bash
+npm run dist
+```
+
+The result goes to `release/`.
+
+## How It Works
+
+The app installs [BepInEx](https://github.com/BepInEx/BepInEx) (5 for Mono games, 6 for IL2CPP games) and [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) into the game folder and sets them up for the chosen language. With **Translate ahead** it also pulls the text out of the game files and translates it in batches before the first launch, so lines show up translated instantly.
+
+Everything it adds can be turned off or removed with one click, and the game folder goes back to how it was.
+
+## Credits
+
+* [BepInEx](https://github.com/BepInEx/BepInEx) — LGPL-2.1
+* [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) — MIT
+* [flag-icons](https://github.com/lipis/flag-icons) — MIT
+* [Tabler Icons](https://github.com/tabler/tabler-icons) — MIT
+
+BepInEx and XUnity.AutoTranslator are downloaded from their official releases during install; they are not bundled with this app.
 
 <h2 align="center">Translation Example</h2>
 
