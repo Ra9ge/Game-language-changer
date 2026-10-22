@@ -212,6 +212,8 @@ function writeConfig(game, options, font) {
     OverrideFont: options.uguiFont || ''
   }
   sections.Texture = { EnableTextureTranslation: options.textures ? 'True' : 'False' }
+  // newer XUnity checks certificates by default, which breaks requests in many older Mono games
+  sections.Http = { DisableCertificateValidation: 'True' }
   ini.update(path.join(root, 'BepInEx', 'config', 'AutoTranslatorConfig.ini'), sections)
   ini.update(path.join(root, 'BepInEx', 'config', 'BepInEx.cfg'), { 'Logging.Console': { Enabled: options.console ? 'true' : 'false' } }, true)
 }
@@ -313,7 +315,7 @@ async function runPretranslate(game, options, ctx) {
         from: options.sourceLang,
         to: options.targetLang,
         signal: ctx.signal,
-        limit: options.pretranslateLimit || 40000,
+        limit: options.pretranslateLimit || 100000,
         report: p => report('pretranslate', 'active', p)
       }
     )

@@ -263,6 +263,14 @@ function countTranslations(root, language) {
   return total
 }
 
+function liveEndpoint(root) {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(root, 'BepInEx', '.ugl-live.json'), 'utf8')).endpoint || null
+  } catch {
+    return null
+  }
+}
+
 function installState(game) {
   const root = game.root
   const loaderOn = exists(path.join(root, 'winhttp.dll')) || exists(path.join(root, 'version.dll'))
@@ -290,7 +298,7 @@ function installState(game) {
     manifest: readManifest(root),
     language,
     fromLanguage: ini.get(config, 'General', 'FromLanguage') || null,
-    endpoint: ini.get(config, 'Service', 'Endpoint') || null,
+    endpoint: (ini.get(config, 'Service', 'Endpoint') === 'CustomTranslate' && liveEndpoint(root)) || ini.get(config, 'Service', 'Endpoint') || null,
     font: ini.get(config, 'Behaviour', 'FallbackFontTextMeshPro') || null,
     translations: status === 'none' ? 0 : countTranslations(root, language),
     lastRun: lastRun(root)

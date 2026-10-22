@@ -19,6 +19,7 @@ const defaults = locale => {
     keepTranslations: true,
     sidebar: true,
     pretranslate: true,
+    liveTranslate: true,
     askShortcut: true,
     accent: 'red',
     transparency: true,

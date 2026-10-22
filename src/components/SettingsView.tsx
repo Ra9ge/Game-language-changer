@@ -113,6 +113,7 @@ export function SettingsView({ settings, version, acrylic, onChange, onToast }: 
             </Row>
           ))}
           {toggle('pretranslate', 'settings.pretranslate', 'settings.pretranslate.text')}
+          {toggle('liveTranslate', 'settings.live', 'settings.live.text')}
           <Row title={t('settings.source')} text={t('settings.source.text')}>
             <Select
               value={settings.sourceLang}

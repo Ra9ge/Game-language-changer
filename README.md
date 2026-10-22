@@ -110,7 +110,9 @@ The result goes to `release/`.
 
 ## How It Works
 
-The app installs [BepInEx](https://github.com/BepInEx/BepInEx) (5 for Mono games, 6 for IL2CPP games) and [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) into the game folder and sets them up for the chosen language. With **Translate ahead** it also pulls the text out of the game files and translates it in batches before the first launch, so lines show up translated instantly.
+The app installs [BepInEx](https://github.com/BepInEx/BepInEx) (5 for Mono games, 6 for IL2CPP games) and [XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) into the game folder and sets them up for the chosen language. With **Translate ahead** it also pulls the text out of the game files and translates it in batches before the first launch, so lines show up translated instantly. It reads plain and LZ4/LZMA-compressed asset bundles, big dialogue files (CSV, JSON, Ink, Yarn, XML) and lines with rich text tags such as `<color>` — the tags stay in place.
+
+With **Live translation in game** (on by default), a game launched from the app sends any line that was not translated ahead to the app, which translates it with retries. XUnity's own spam protection, which used to switch translation off when you skipped through dialogue fast, does not apply to it. The game's config goes back to normal when the game closes.
 
 Everything it adds can be turned off or removed with one click, and the game folder goes back to how it was.
 

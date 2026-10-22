@@ -85,6 +85,7 @@ export interface Settings {
   keepTranslations: boolean
   sidebar: boolean
   pretranslate: boolean
+  liveTranslate: boolean
   askShortcut: boolean
   accent: Accent
   transparency: boolean

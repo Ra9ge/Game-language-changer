@@ -8,6 +8,7 @@ const { createStore } = require('./store.cjs')
 const { scanLibraries } = require('./library.cjs')
 const launcher = require('./launcher.cjs')
 const translations = require('./translations.cjs')
+const live = require('./live.cjs')
 
 if (!app.requestSingleInstanceLock()) app.quit()
 
@@ -17,6 +18,8 @@ let store
 let win
 let busy = null
 let stopWatch = null
+let quitting = false
+let hiddenForGame = false
 const processes = new Map()
 
 const windowsBuild = () => (process.platform === 'win32' ? Number(os.release().split('.')[2]) || 0 : 0)
@@ -44,6 +47,14 @@ function createWindow() {
     }
   })
   win.once('ready-to-show', () => win.show())
+  win.on('close', event => {
+    // the live translator lives in this process: keep it running in the background until the game closes
+    if (!quitting && live.isActive()) {
+      event.preventDefault()
+      hiddenForGame = true
+      win.hide()
+    }
+  })
   win.on('maximize', () => send('window:state', { maximized: true }))
   win.on('unmaximize', () => send('window:state', { maximized: false }))
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -82,7 +93,17 @@ function trackProcess(game, alreadyRunning) {
     } else if (!running && (seen || Date.now() - started > 120000)) {
       clearInterval(timer)
       processes.delete(key)
+      live.restore(game.root)
       send('game:process', { root: game.root, state: 'stopped' })
+      if (hiddenForGame && !live.isActive() && processes.size === 0) {
+        // the window was closed while the game ran: finish the top-up quietly, then exit
+        ;(seen ? refreshAfterSession(game) : Promise.resolve()).finally(() => {
+          if (!hiddenForGame || live.isActive()) return
+          quitting = true
+          app.quit()
+        })
+        return
+      }
       if (seen) refreshAfterSession(game)
     }
   }, 2000)
@@ -201,6 +222,11 @@ function registerHandlers() {
     stopWatch = null
     if (game.install.status === 'installed') {
       stopWatch = launcher.watch(game, stage => send('game:stage', { root: game.root, stage }))
+      if (store.getSettings().liveTranslate !== false && !(await installer.isRunning(game.exe))) {
+        try {
+          await live.enable(game)
+        } catch {}
+      }
     }
     await launcher.launch(game)
     trackProcess(game, false)
@@ -308,15 +334,37 @@ function registerHandlers() {
   ipcMain.on('window:close', () => win?.close())
 }
 
+// Games whose config still points at the live translator from an earlier run of the app.
+async function recoverLiveSessions() {
+  for (const { root } of store.getRecent()) {
+    if (!live.readState(root)) continue
+    try {
+      const game = analyze(root, { withLanguage: false })
+      if (game.ok && (await installer.isRunning(game.exe)) && (await live.resume(root))) trackProcess(game, true)
+      else live.restore(root)
+    } catch {
+      live.restore(root)
+    }
+  }
+}
+
 app.whenReady().then(() => {
   nativeTheme.themeSource = 'dark'
   store = createStore(userDir, systemLanguage())
   registerHandlers()
   createWindow()
+  recoverLiveSessions()
+})
+
+app.on('before-quit', () => {
+  quitting = true
+  live.restoreAll()
 })
 
 app.on('second-instance', () => {
   if (!win) return
+  hiddenForGame = false
+  if (!win.isVisible()) win.show()
   if (win.isMinimized()) win.restore()
   win.focus()
 })
