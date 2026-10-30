@@ -91,7 +91,7 @@ You can inspect the implementation, build the application yourself, report bugs,
 
 ## Download
 
-Grab `UnityGameLanguageChanger-x.x.x.exe` from [Releases](../../releases/latest). It's portable — no install needed. Windows SmartScreen may warn about an unsigned app: click **More info → Run anyway**.
+Grab `UnityGameLanguageChanger-x.x.x.exe` from [Releases](../../releases/latest). It's portable — no install needed. Prefer a normal folder? Take `UnityGameLanguageChanger-x.x.x-win.zip`, unpack it anywhere and run `Unity Game Language Changer.exe`. Windows SmartScreen may warn about an unsigned app: click **More info → Run anyway**.
 
 ## Build from Source
 

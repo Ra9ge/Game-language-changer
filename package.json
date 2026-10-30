@@ -1,7 +1,7 @@
 {
   "name": "unity-game-language-changer",
   "productName": "Unity Game Language Changer",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Translate any Unity game into your language with BepInEx and XUnity.AutoTranslator",
   "author": "Unity Game Language Changer",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "dev": "vite",
     "build:ui": "tsc --noEmit && vite build",
     "start": "npm run build:ui && electron .",
-    "dist": "npm run build:ui && electron-builder --win portable",
+    "dist": "npm run build:ui && electron-builder --win portable zip",
     "format": "prettier --write src electron"
   },
   "dependencies": {
@@ -51,8 +51,10 @@
     "win": {
       "icon": "build/icon.ico",
       "target": [
-        "portable"
-      ]
+        "portable",
+        "zip"
+      ],
+      "artifactName": "UnityGameLanguageChanger-${version}-win.${ext}"
     },
     "portable": {
       "artifactName": "UnityGameLanguageChanger-${version}.exe"

@@ -10,7 +10,7 @@
 
 ### Как пользоваться
 
-1. Скачай `UnityGameLanguageChanger-x.x.x.exe` из [Releases](../../releases) и запусти — установка не нужна.
+1. Скачай `UnityGameLanguageChanger-x.x.x.exe` из [Releases](../../releases) и запусти — установка не нужна. Нужна обычная папка? Возьми `UnityGameLanguageChanger-x.x.x-win.zip`, распакуй куда угодно и запускай `Unity Game Language Changer.exe`.
 2. Вставь путь до папки игры (или перетащи папку/exe в окно).
 3. Выбери язык справа сверху.
 4. Нажми **Установить перевод**, потом **Запустить игру**.

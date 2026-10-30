@@ -12,6 +12,34 @@ const live = require('./live.cjs')
 
 if (!app.requestSingleInstanceLock()) app.quit()
 
+const APP_ID = 'com.ugl.languagechanger'
+const APP_NAME = 'Unity Game Language Changer'
+// The portable exe unpacks itself into a temp folder and runs from there; that copy is deleted on exit.
+// Taskbar pins and the Start menu must point at the exe the user actually started.
+const launchExe = process.env.PORTABLE_EXECUTABLE_FILE || process.execPath
+if (process.platform === 'win32') app.setAppUserModelId(APP_ID)
+
+function updateStartMenuShortcut() {
+  if (process.platform !== 'win32' || !app.isPackaged) return
+  try {
+    const link = path.join(app.getPath('appData'), 'Microsoft', 'Windows', 'Start Menu', 'Programs', `${APP_NAME}.lnk`)
+    const details = {
+      target: launchExe,
+      cwd: path.dirname(launchExe),
+      icon: launchExe,
+      iconIndex: 0,
+      appUserModelId: APP_ID,
+      description: APP_NAME
+    }
+    let current = null
+    try {
+      current = shell.readShortcutLink(link)
+    } catch {}
+    if (current && current.target?.toLowerCase() === launchExe.toLowerCase() && current.appUserModelId === APP_ID) return
+    shell.writeShortcutLink(link, current ? 'replace' : 'create', details)
+  } catch {}
+}
+
 const userDir = app.getPath('userData')
 const cacheDir = path.join(userDir, 'cache')
 let store
@@ -46,6 +74,15 @@ function createWindow() {
       additionalArguments: [`--ugl-material=${acrylic ? 'acrylic' : 'solid'}`]
     }
   })
+  if (process.platform === 'win32') {
+    win.setAppDetails({
+      appId: APP_ID,
+      appIconPath: launchExe,
+      appIconIndex: 0,
+      relaunchCommand: `"${launchExe}"`,
+      relaunchDisplayName: APP_NAME
+    })
+  }
   win.once('ready-to-show', () => win.show())
   win.on('close', event => {
     // the live translator lives in this process: keep it running in the background until the game closes
@@ -353,6 +390,7 @@ app.whenReady().then(() => {
   store = createStore(userDir, systemLanguage())
   registerHandlers()
   createWindow()
+  updateStartMenuShortcut()
   recoverLiveSessions()
 })
 
